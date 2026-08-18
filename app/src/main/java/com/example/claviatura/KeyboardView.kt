@@ -79,21 +79,20 @@ class KeyboardView(
     }
 
     private fun initPreviewOverlay() {
-        val popupW = dpToPx(54)
-        val popupH = dpToPx(60)
+        val popupSize = dpToPx(48)
 
         previewTextView.apply {
-            textSize = 28f
-            typeface = Typeface.DEFAULT_BOLD
+            textSize = 20f
+            typeface = if (prefs.useSystemFont) Typeface.DEFAULT_BOLD else Typeface.MONOSPACE
             gravity = Gravity.CENTER
             layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
         }
 
         previewCardView.apply {
             visibility = View.GONE
-            elevation = dpToPx(12).toFloat()
-            layoutParams = LayoutParams(popupW, popupH)
-            setPadding(dpToPx(4), dpToPx(4), dpToPx(4), dpToPx(4))
+            elevation = 0f
+            layoutParams = LayoutParams(popupSize, popupSize)
+            setPadding(0, 0, 0, 0)
             addView(previewTextView)
         }
 
@@ -175,67 +174,206 @@ class KeyboardView(
 
     /**
      * Korean Layout:
-     * - Hold characters are unified with English!
-     * - If number row is disabled, top row holds are numbers (1-0).
+     * - Supports Dubeolshik, Danmoeum, Danmoeum+, Cheonjiin, Cheonjiin+, Naratgeul, Vega.
+     * - Hold characters are unified with English.
      */
     private fun buildKoreanLayout() {
         val isShifted = shiftMode != ShiftMode.OFF
-        val row1 = if (isShifted) listOf("ㅃ", "ㅉ", "ㄸ", "ㄲ", "ㅆ", "ㅛ", "ㅕ", "ㅑ", "ㅒ", "ㅖ")
-        else listOf("ㅂ", "ㅈ", "ㄷ", "ㄱ", "ㅅ", "ㅛ", "ㅕ", "ㅑ", "ㅐ", "ㅔ")
+        val layoutType = prefs.koreanLayoutType
 
-        // Unified hold characters across Korean & English
-        val row1Hold = if (prefs.showNumberRow) {
-            listOf("%", "₩", "=", "&", "'", "*", "-", "+", "<", ">")
-        } else {
-            listOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "0")
+        when {
+            layoutType.contains("Danmoeum", ignoreCase = true) || layoutType.contains("단모음") -> {
+                val isPlus = layoutType.contains("+")
+                val row1 = if (isPlus) {
+                    if (isShifted) listOf("ㅃ", "ㅉ", "ㄸ", "ㄲ", "ㅆ", "ㅛ", "ㅕ", "ㅑ", "ㅒ", "ㅖ")
+                    else listOf("ㅂ", "ㅈ", "ㄷ", "ㄱ", "ㅅ", "ㅛ", "ㅕ", "ㅑ", "ㅐ", "ㅔ")
+                } else {
+                    listOf("ㅂ", "ㅈ", "ㄷ", "ㄱ", "ㅅ", "ㅗ", "ㅐ", "ㅔ")
+                }
+
+                val row2 = if (isPlus) {
+                    listOf("ㅁ", "ㄴ", "ㅇ", "ㄹ", "ㅎ", "ㅗ", "ㅓ", "ㅏ", "ㅣ")
+                } else {
+                    listOf("ㅁ", "ㄴ", "ㅇ", "ㄹ", "ㅎ", "ㅓ", "ㅏ", "ㅣ")
+                }
+
+                val row3 = if (isPlus) {
+                    listOf("ㅋ", "ㅌ", "ㅊ", "ㅍ", "ㅠ", "ㅜ", "ㅡ")
+                } else {
+                    listOf("ㅋ", "ㅌ", "ㅊ", "ㅍ", "ㅜ", "ㅡ")
+                }
+
+                val row1Hold = if (prefs.showNumberRow) {
+                    List(row1.size) { i -> listOf("%", "₩", "=", "&", "'", "*", "-", "+", "<", ">").getOrElse(i) { "" } }
+                } else {
+                    List(row1.size) { i -> "${i + 1}" }
+                }
+                val row2Hold = List(row2.size) { i -> listOf("@", "#", ":", ";", "^", "~", "/", "(", ")").getOrElse(i) { "" } }
+                val row3Hold = List(row3.size) { i -> listOf("`", "\"", "'", "$", ",", "!", "?").getOrElse(i) { "" } }
+
+                val r1 = createRowContainer()
+                for (i in row1.indices) addKeyToRow(r1, row1[i], row1Hold[i], 1f)
+                rowsContainer.addView(r1)
+
+                val r2 = createRowContainer()
+                r2.addView(View(context).apply { layoutParams = LinearLayout.LayoutParams(0, LayoutParams.MATCH_PARENT, 0.5f) })
+                for (i in row2.indices) addKeyToRow(r2, row2[i], row2Hold[i], 1f)
+                r2.addView(View(context).apply { layoutParams = LinearLayout.LayoutParams(0, LayoutParams.MATCH_PARENT, 0.5f) })
+                rowsContainer.addView(r2)
+
+                val r3 = createRowContainer()
+                addKeyToRow(r3, "SHIFT", null, 1.4f, isControl = true)
+                for (i in row3.indices) addKeyToRow(r3, row3[i], row3Hold[i], 1f)
+                addKeyToRow(r3, "BACKSPACE", null, 1.4f, isControl = true)
+                rowsContainer.addView(r3)
+
+                buildBottomRow()
+            }
+            layoutType.contains("Cheonjiin", ignoreCase = true) || layoutType.contains("천지인") -> {
+                val isPlus = layoutType.contains("+")
+                val r1Keys = listOf("ㅣ", "·", "ㅡ")
+                val r2Keys = listOf("ㄱㅋ", "ㄴㄹ", "ㄷㅌ")
+                val r3Keys = listOf("ㅂㅍ", "ㅅㅎ", "ㅈㅊ")
+
+                val r1 = createRowContainer()
+                for (k in r1Keys) addKeyToRow(r1, k, null, 1f)
+                rowsContainer.addView(r1)
+
+                val r2 = createRowContainer()
+                for (k in r2Keys) addKeyToRow(r2, k, null, 1f)
+                rowsContainer.addView(r2)
+
+                val r3 = createRowContainer()
+                addKeyToRow(r3, "SHIFT", null, 1.2f, isControl = true)
+                for (k in r3Keys) addKeyToRow(r3, k, null, 1f)
+                addKeyToRow(r3, "BACKSPACE", null, 1.2f, isControl = true)
+                rowsContainer.addView(r3)
+
+                val r4 = createRowContainer()
+                addKeyToRow(r4, "!?", null, 1f, isControl = true)
+                addKeyToRow(r4, "ㅇㅁ", null, 1f)
+                addKeyToRow(r4, "SPACE", null, 2f, isControl = true)
+                addKeyToRow(r4, "ENTER", null, 1.2f, isControl = true)
+                rowsContainer.addView(r4)
+            }
+            layoutType.contains("Naratgeul", ignoreCase = true) || layoutType.contains("나랏글") -> {
+                val r1Keys = listOf("ㄱ", "ㄴ", "ㅏ")
+                val r2Keys = listOf("ㄹ", "ㅁ", "ㅓ")
+                val r3Keys = listOf("ㅅ", "ㅇ", "ㅣ")
+
+                val r1 = createRowContainer()
+                for (k in r1Keys) addKeyToRow(r1, k, null, 1f)
+                addKeyToRow(r1, "BACKSPACE", null, 1f, isControl = true)
+                rowsContainer.addView(r1)
+
+                val r2 = createRowContainer()
+                for (k in r2Keys) addKeyToRow(r2, k, null, 1f)
+                addKeyToRow(r2, "ENTER", null, 1f, isControl = true)
+                rowsContainer.addView(r2)
+
+                val r3 = createRowContainer()
+                for (k in r3Keys) addKeyToRow(r3, k, null, 1f)
+                addKeyToRow(r3, "+획", null, 1f, isControl = true)
+                rowsContainer.addView(r3)
+
+                val r4 = createRowContainer()
+                addKeyToRow(r4, "SPACE", null, 1.2f, isControl = true)
+                addKeyToRow(r4, "ㅡ", null, 1f)
+                addKeyToRow(r4, "·", null, 1f)
+                addKeyToRow(r4, "쌍자음", null, 1f, isControl = true)
+                rowsContainer.addView(r4)
+            }
+            else -> {
+                // Standard Dubeolshik
+                val row1 = if (isShifted) listOf("ㅃ", "ㅉ", "ㄸ", "ㄲ", "ㅆ", "ㅛ", "ㅕ", "ㅑ", "ㅒ", "ㅖ")
+                else listOf("ㅂ", "ㅈ", "ㄷ", "ㄱ", "ㅅ", "ㅛ", "ㅕ", "ㅑ", "ㅐ", "ㅔ")
+
+                val row1Hold = if (prefs.showNumberRow) {
+                    listOf("%", "₩", "=", "&", "'", "*", "-", "+", "<", ">")
+                } else {
+                    listOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "0")
+                }
+
+                val row2 = listOf("ㅁ", "ㄴ", "ㅇ", "ㄹ", "ㅎ", "ㅗ", "ㅓ", "ㅏ", "ㅣ")
+                val row2Hold = if (prefs.showNumberRow) {
+                    listOf("@", "#", ":", ";", "^", "~", "/", "(", ")")
+                } else {
+                    listOf("@", "#", "$", "%", "&", "-", "+", "(", ")")
+                }
+
+                val row3 = listOf("ㅋ", "ㅌ", "ㅊ", "ㅍ", "ㅠ", "ㅜ", "ㅡ")
+                val row3Hold = if (prefs.showNumberRow) {
+                    listOf("`", "\"", "'", "$", ",", "!", "?")
+                } else {
+                    listOf("*", "\"", "'", ":", ";", "!", "?")
+                }
+
+                val r1 = createRowContainer()
+                for (i in row1.indices) addKeyToRow(r1, row1[i], row1Hold[i], 1f)
+                rowsContainer.addView(r1)
+
+                val r2 = createRowContainer()
+                r2.addView(View(context).apply { layoutParams = LinearLayout.LayoutParams(0, LayoutParams.MATCH_PARENT, 0.5f) })
+                for (i in row2.indices) addKeyToRow(r2, row2[i], row2Hold[i], 1f)
+                r2.addView(View(context).apply { layoutParams = LinearLayout.LayoutParams(0, LayoutParams.MATCH_PARENT, 0.5f) })
+                rowsContainer.addView(r2)
+
+                val r3 = createRowContainer()
+                addKeyToRow(r3, "SHIFT", null, 1.4f, isControl = true)
+                for (i in row3.indices) addKeyToRow(r3, row3[i], row3Hold[i], 1f)
+                addKeyToRow(r3, "BACKSPACE", null, 1.4f, isControl = true)
+                rowsContainer.addView(r3)
+
+                buildBottomRow()
+            }
         }
-
-        val row2 = listOf("ㅁ", "ㄴ", "ㅇ", "ㄹ", "ㅎ", "ㅗ", "ㅓ", "ㅏ", "ㅣ")
-        val row2Hold = if (prefs.showNumberRow) {
-            listOf("@", "#", ":", ";", "^", "~", "/", "(", ")")
-        } else {
-            listOf("@", "#", "$", "%", "&", "-", "+", "(", ")")
-        }
-
-        val row3 = listOf("ㅋ", "ㅌ", "ㅊ", "ㅍ", "ㅠ", "ㅜ", "ㅡ")
-        val row3Hold = if (prefs.showNumberRow) {
-            listOf("`", "\"", "'", "$", ",", "!", "?")
-        } else {
-            listOf("*", "\"", "'", ":", ";", "!", "?")
-        }
-
-        // Row 1
-        val r1 = createRowContainer()
-        for (i in row1.indices) addKeyToRow(r1, row1[i], row1Hold[i], 1f)
-        rowsContainer.addView(r1)
-
-        // Row 2 (with subtle edge spacers for standard layout feel)
-        val r2 = createRowContainer()
-        r2.addView(View(context).apply { layoutParams = LinearLayout.LayoutParams(0, LayoutParams.MATCH_PARENT, 0.5f) })
-        for (i in row2.indices) addKeyToRow(r2, row2[i], row2Hold[i], 1f)
-        r2.addView(View(context).apply { layoutParams = LinearLayout.LayoutParams(0, LayoutParams.MATCH_PARENT, 0.5f) })
-        rowsContainer.addView(r2)
-
-        // Row 3
-        val r3 = createRowContainer()
-        addKeyToRow(r3, "SHIFT", null, 1.4f, isControl = true)
-        for (i in row3.indices) addKeyToRow(r3, row3[i], row3Hold[i], 1f)
-        addKeyToRow(r3, "BACKSPACE", null, 1.4f, isControl = true)
-        rowsContainer.addView(r3)
-
-        buildBottomRow()
     }
 
     /**
-     * English QWERTY Layout:
+     * English Layout:
+     * - Supports QWERTY, Dvorak, Colemak, Workman, QWERTZ, AZERTY.
      * - Shift states: OFF (lowercase), ON (uppercase once), CAPS_LOCK (uppercase locked)
-     * - Hold characters are unified with Korean!
-     * - If number row is disabled, top row holds are numbers (1-0).
      */
     private fun buildEnglishLayout() {
         val isUpperCase = shiftMode != ShiftMode.OFF
-        val row1 = if (isUpperCase) listOf("Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P")
-        else listOf("q", "w", "e", "r", "t", "y", "u", "i", "o", "p")
+        val layoutType = prefs.englishLayoutType
+
+        val (rawR1, rawR2, rawR3) = when {
+            layoutType.contains("Dvorak", ignoreCase = true) || layoutType.contains("드보락") -> Triple(
+                listOf("P", "Y", "F", "G", "C", "R", "L", "?", "/", "="),
+                listOf("A", "O", "E", "U", "I", "D", "H", "T", "N", "S"),
+                listOf("Q", "J", "K", "X", "B", "M", "W", "V", "Z")
+            )
+            layoutType.contains("Colemak", ignoreCase = true) || layoutType.contains("콜맥") -> Triple(
+                listOf("Q", "W", "F", "P", "G", "J", "L", "U", "Y", ";"),
+                listOf("A", "R", "S", "T", "D", "H", "N", "E", "I", "O"),
+                listOf("Z", "X", "C", "V", "B", "K", "M")
+            )
+            layoutType.contains("Workman", ignoreCase = true) -> Triple(
+                listOf("Q", "D", "R", "W", "B", "J", "F", "U", "P", ";"),
+                listOf("A", "S", "H", "T", "G", "Y", "N", "E", "O", "I"),
+                listOf("Z", "X", "M", "C", "V", "K", "L")
+            )
+            layoutType.contains("QWERTZ", ignoreCase = true) -> Triple(
+                listOf("Q", "W", "E", "R", "T", "Z", "U", "I", "O", "P"),
+                listOf("A", "S", "D", "F", "G", "H", "J", "K", "L"),
+                listOf("Y", "X", "C", "V", "B", "N", "M")
+            )
+            layoutType.contains("AZERTY", ignoreCase = true) -> Triple(
+                listOf("A", "Z", "E", "R", "T", "Y", "U", "I", "O", "P"),
+                listOf("Q", "S", "D", "F", "G", "H", "J", "K", "L", "M"),
+                listOf("W", "X", "C", "V", "B", "N")
+            )
+            else -> Triple(
+                listOf("Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"),
+                listOf("A", "S", "D", "F", "G", "H", "J", "K", "L"),
+                listOf("Z", "X", "C", "V", "B", "N", "M")
+            )
+        }
+
+        val row1 = if (isUpperCase) rawR1 else rawR1.map { it.lowercase() }
+        val row2 = if (isUpperCase) rawR2 else rawR2.map { it.lowercase() }
+        val row3 = if (isUpperCase) rawR3 else rawR3.map { it.lowercase() }
 
         // Unified hold characters across Korean & English
         val row1Hold = if (prefs.showNumberRow) {
@@ -244,16 +382,12 @@ class KeyboardView(
             listOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "0")
         }
 
-        val row2 = if (isUpperCase) listOf("A", "S", "D", "F", "G", "H", "J", "K", "L")
-        else listOf("a", "s", "d", "f", "g", "h", "j", "k", "l")
         val row2Hold = if (prefs.showNumberRow) {
             listOf("@", "#", ":", ";", "^", "~", "/", "(", ")")
         } else {
             listOf("@", "#", "$", "%", "&", "-", "+", "(", ")")
         }
 
-        val row3 = if (isUpperCase) listOf("Z", "X", "C", "V", "B", "N", "M")
-        else listOf("z", "x", "c", "v", "b", "n", "m")
         val row3Hold = if (prefs.showNumberRow) {
             listOf("`", "\"", "'", "$", ",", "!", "?")
         } else {
@@ -308,28 +442,30 @@ class KeyboardView(
     }
 
     /**
-     * Bottom Control Row matching SmartBoard:
-     * [ @ / 한글 | 🌐A | 漢 | 간격 (···) | . | ↵ ]
+     * Bottom Control Row:
+     * [ @ / 한글 | 🌐A | 漢 | SPACE (···) | . | ↵ ]
      */
     private fun buildBottomRow() {
         val row = createRowContainer()
 
         // 1. Symbol mode toggle key (@ vector icon in text mode, "한글"/"ABC" in symbol mode)
-        val symKeyTag = if (isSymbolMode) (if (currentLanguage == "ko_KR") "한글" else "ABC") else "@"
-        addKeyToRow(row, symKeyTag, null, 1.25f, isControl = true)
+        if (prefs.showSpecialKey || isSymbolMode) {
+            val symKeyTag = if (isSymbolMode) (if (currentLanguage == "ko_KR") "한글" else "ABC") else "@"
+            addKeyToRow(row, symKeyTag, null, 1.2f, isControl = true)
+        }
 
         // 2. Language switch key (🌐A with ··· hint)
         addKeyToRow(row, "🌐A", "···", 1.15f, isControl = true)
 
         // 3. Hanja key (漢 with ··· hint)
-        if (currentLanguage == "ko_KR" && !isSymbolMode) {
+        if (prefs.showVoiceKey && currentLanguage == "ko_KR" && !isSymbolMode) {
             addKeyToRow(row, "漢", "···", 1.0f, isControl = true)
         }
 
-        // 4. Space bar (no text, clean blank key)
+        // 4. Space bar (clean key)
         val spaceWeight = when {
             isSymbolMode -> 4.5f
-            currentLanguage == "ko_KR" -> 3.6f
+            currentLanguage == "ko_KR" -> if (prefs.showVoiceKey) 3.6f else 4.4f
             else -> 4.5f
         }
         addKeyToRow(row, "SPACE", null, spaceWeight, isControl = false)
@@ -372,7 +508,7 @@ class KeyboardView(
                 }
             }
             background = createKeyBackground(key, actualControl, isPressed = false, isNumberRow = isNumberRowKey)
-            elevation = if (actualControl && !isShiftActive) dpToPxF(0.5f) else dpToPxF(1.5f)
+            elevation = 0f
         }
 
         val iconRes = when (key) {
@@ -703,6 +839,7 @@ class KeyboardView(
      * - Long Press / Hold: Theme hold card (e.g. #4C84F3) with white text
      */
     private fun showKeyPreview(anchorView: View, text: String, isHold: Boolean = false) {
+        if (!prefs.showKeyPreview) return
         try {
             val theme = prefs.currentTheme
             previewTextView.apply {
@@ -711,7 +848,7 @@ class KeyboardView(
             }
 
             previewCardView.background = GradientDrawable().apply {
-                cornerRadius = dpToPx(10).toFloat()
+                shape = GradientDrawable.OVAL
                 if (isHold) {
                     setColor(theme.previewHoldBackground)
                 } else {
@@ -730,14 +867,13 @@ class KeyboardView(
             val relX = (keyLoc[0] - kbLoc[0]).toFloat()
             val relY = (keyLoc[1] - kbLoc[1]).toFloat()
 
-            val popupW = dpToPx(54).toFloat()
-            val popupH = dpToPx(60).toFloat()
+            val popupSize = dpToPx(48).toFloat()
 
-            val posX = relX + (anchorView.width - popupW) / 2f
-            val posY = relY - popupH - dpToPxF(6f)
+            val posX = relX + (anchorView.width - popupSize) / 2f
+            val posY = relY - popupSize - dpToPxF(8f)
 
             val minX = dpToPxF(2f)
-            val maxX = (this.width.toFloat() - popupW - dpToPxF(2f)).coerceAtLeast(0f)
+            val maxX = (this.width.toFloat() - popupSize - dpToPxF(2f)).coerceAtLeast(0f)
 
             previewCardView.x = posX.coerceIn(minX, maxX)
             previewCardView.y = posY

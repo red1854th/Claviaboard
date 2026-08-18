@@ -7,7 +7,8 @@ import android.view.MotionEvent
 import android.view.View
 
 class ContinuousDeleteTouchListener(
-    private val getHoldDelay: () -> Long, // Int에서 Long으로 변경 (Preferences와 일치)
+    private val getHoldDelay: () -> Long,
+    private val getRepeatInterval: () -> Long = { 45L },
     private val onDelete: () -> Unit
 ) : View.OnTouchListener {
 
@@ -18,7 +19,7 @@ class ContinuousDeleteTouchListener(
         override fun run() {
             if (isDeleting) {
                 onDelete()
-                handler.postDelayed(this, 50L) // 연속 삭제 간격 50ms
+                handler.postDelayed(this, getRepeatInterval())
             }
         }
     }
@@ -28,8 +29,8 @@ class ContinuousDeleteTouchListener(
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
                 isDeleting = true
-                onDelete() // 1회 즉시 삭제
-                handler.postDelayed(deleteRunnable, getHoldDelay()) // .toLong() 제거 (이미 Long임)
+                onDelete()
+                handler.postDelayed(deleteRunnable, getHoldDelay())
                 return true
             }
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {

@@ -2,7 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#0A0D14"
+    android:background="#07090E"
     android:fillViewport="true">
 
     <LinearLayout
@@ -11,168 +11,180 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- ASCII Art Banner (Linux Ricing Style) -->
+        <!-- Editorial Masthead / Technical Analog Header -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#121620"
-            android:padding="14dp"
-            android:layout_marginTop="6dp"
-            android:layout_marginBottom="12dp"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="  ___ _            _       _                 \n / __| |__ ___ _(_)__ _| |_ _  _ _ _ __ _ \n| (__| / _` \\ V / / _` |  _| || | '_/ _` |\n \\___|_\\__,_|\\_/|_\\__,_|\\__|\\_,_|_| \\__,_|"
-                android:fontFamily="monospace"
-                android:textSize="11sp"
-                android:lineSpacingMultiplier="1.05"
-                android:textColor="#38BDF8"
-                android:textStyle="bold"
-                android:gravity="center" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="══[ CLAVIATURA v2.5 // HANGUL &amp; EN IME ENGINE ]══"
-                android:fontFamily="monospace"
-                android:textSize="10sp"
-                android:textColor="#94A3B8"
-                android:gravity="center" />
-        </LinearLayout>
-
-        <!-- Neofetch / Fastfetch System Rice Info Box -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#121620"
-            android:padding="14dp"
+            android:background="#0E131F"
+            android:padding="16dp"
+            android:layout_marginTop="4dp"
             android:layout_marginBottom="14dp"
             android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="[ RICE // SYSTEM STATUS ]"
-                android:fontFamily="monospace"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                android:textColor="#4ADE80" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginTop="8dp">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="❯ HOST    : claviatura@archlinux-arm64"
-                    android:fontFamily="monospace"
-                    android:textSize="11sp"
-                    android:textColor="#E2E8F0" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:text="❯ ENGINE  : Zero-Alloc Hangul Automaton"
-                    android:fontFamily="monospace"
-                    android:textSize="11sp"
-                    android:textColor="#E2E8F0" />
-
-                <TextView
-                    android:id="@+id/riceThemeBadge"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:text="❯ THEME   : Catppuccin Mocha [Dark]"
-                    android:fontFamily="monospace"
-                    android:textSize="11sp"
-                    android:textColor="#F472B6" />
-
-                <TextView
-                    android:id="@+id/riceConfigBadge"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:text="❯ CONFIG  : ~/.config/claviatura/rice.conf"
-                    android:fontFamily="monospace"
-                    android:textSize="11sp"
-                    android:textColor="#FBBF24" />
-            </LinearLayout>
-        </LinearLayout>
-
-        <!-- IME Activation Banner (Only shown if NOT yet enabled or NOT default) -->
-        <LinearLayout
-            android:id="@+id/activationPromptCard"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#1E1B4B"
-            android:padding="14dp"
-            android:layout_marginBottom="14dp"
-            android:visibility="gone"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="[ ! ] ACTION REQUIRED: INITIALIZE IME"
-                android:fontFamily="monospace"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                android:textColor="#F43F5E" />
-
-            <TextView
-                android:id="@+id/activationDescription"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:text="$ claviatura-setup --enable &amp;&amp; --set-default"
-                android:fontFamily="monospace"
-                android:textSize="11sp"
-                android:textColor="#CBD5E1" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginTop="10dp">
+                android:gravity="center_vertical">
 
-                <Button
-                    android:id="@+id/enableImeButton"
+                <TextView
                     android:layout_width="0dp"
-                    android:layout_height="42dp"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_marginEnd="6dp"
-                    android:text="1. 키보드 활성화"
+                    android:text="CLAVIATURA"
                     android:fontFamily="monospace"
-                    android:textSize="11sp"
-                    android:backgroundTint="#3B82F6"
-                    android:textColor="#FFFFFF" />
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.08"
+                    android:textColor="#F8FAFC" />
 
-                <Button
-                    android:id="@+id/selectImeButton"
-                    android:layout_width="0dp"
-                    android:layout_height="42dp"
-                    android:layout_weight="1"
-                    android:layout_marginStart="6dp"
-                    android:text="2. 기본 키보드 선택"
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="● READY // 60HZ"
                     android:fontFamily="monospace"
-                    android:textSize="11sp"
-                    android:backgroundTint="#6366F1"
-                    android:textColor="#FFFFFF" />
+                    android:textSize="9sp"
+                    android:textStyle="bold"
+                    android:textColor="#4ADE80"
+                    android:background="#152338"
+                    android:paddingStart="6dp"
+                    android:paddingEnd="6dp"
+                    android:paddingTop="2dp"
+                    android:paddingBottom="2dp" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="SPECIFICATION &amp; CALIBRATION CONTROL INTERFACE"
+                android:fontFamily="monospace"
+                android:textSize="9sp"
+                android:letterSpacing="0.05"
+                android:textColor="#38BDF8" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#1E293B"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="ENGINE: v2.5.0\nKERNEL: HANGUL-IME"
+                    android:fontFamily="monospace"
+                    android:textSize="9sp"
+                    android:textColor="#64748B" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="INPUT: DUAL-LANG\nTRANSDUCER: HAPTIC"
+                    android:fontFamily="monospace"
+                    android:textSize="9sp"
+                    android:textColor="#64748B" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:text="LATENCY: &lt;10MS\nBUILD: 2026.08"
+                    android:fontFamily="monospace"
+                    android:textSize="9sp"
+                    android:textColor="#64748B" />
             </LinearLayout>
         </LinearLayout>
 
-        <!-- Interactive Live Terminal Typing Sandbox -->
+        <!-- 00: Input Method & Language Engine Configuration -->
+        <LinearLayout
+            android:id="@+id/btnLanguageSettings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#0E131F"
+            android:padding="16dp"
+            android:layout_marginBottom="14dp"
+            android:orientation="vertical"
+            android:clickable="true"
+            android:focusable="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="[ 00 // INPUT METHOD &amp; KEYBOARDS ]"
+                    android:fontFamily="monospace"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textColor="#4ADE80" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="CONFIG ❯"
+                    android:fontFamily="monospace"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:textColor="#38BDF8" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#1E293B"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:id="@+id/mainKoreanLayoutBadge"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="❯ KOREAN  : Dubeolshik (Standard)"
+                android:fontFamily="monospace"
+                android:textSize="11sp"
+                android:textColor="#E2E8F0" />
+
+            <TextView
+                android:id="@+id/mainEnglishLayoutBadge"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="❯ ENGLISH : QWERTY (Standard)"
+                android:fontFamily="monospace"
+                android:textSize="11sp"
+                android:textColor="#94A3B8" />
+
+            <TextView
+                android:id="@+id/riceThemeBadge"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="❯ THEME   : Catppuccin Mocha [Dark]"
+                android:fontFamily="monospace"
+                android:textSize="11sp"
+                android:textColor="#F472B6" />
+        </LinearLayout>
+
+        <!-- Live Terminal Sandbox -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#121620"
+            android:background="#0E131F"
             android:padding="14dp"
             android:layout_marginBottom="14dp"
             android:orientation="vertical">
@@ -187,9 +199,9 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="[ 00 // LIVE TERMINAL SANDBOX ]"
+                    android:text="[ LIVE BUFFER &amp; INPUT BENCH ]"
                     android:fontFamily="monospace"
-                    android:textSize="12sp"
+                    android:textSize="11sp"
                     android:textStyle="bold"
                     android:textColor="#38BDF8" />
 
@@ -197,9 +209,9 @@
                     android:id="@+id/clearSandboxButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="[ CLEAR ]"
+                    android:text="[ FLUSH BUFFER ]"
                     android:fontFamily="monospace"
-                    android:textSize="11sp"
+                    android:textSize="10sp"
                     android:textColor="#94A3B8"
                     android:padding="4dp" />
             </LinearLayout>
@@ -208,8 +220,8 @@
                 android:id="@+id/sandboxContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:background="#0A0D14"
+                android:layout_marginTop="8dp"
+                android:background="#07090E"
                 android:padding="12dp"
                 android:orientation="horizontal"
                 android:gravity="center_vertical">
@@ -219,7 +231,7 @@
                     android:layout_height="wrap_content"
                     android:text="❯ "
                     android:fontFamily="monospace"
-                    android:textSize="14sp"
+                    android:textSize="13sp"
                     android:textStyle="bold"
                     android:textColor="#4ADE80" />
 
@@ -229,10 +241,10 @@
                     android:layout_height="wrap_content"
                     android:background="@null"
                     android:fontFamily="monospace"
-                    android:hint="타이핑 테스트..."
+                    android:hint="Type here to test keyboard engine..."
                     android:textColorHint="#475569"
                     android:textColor="#F8FAFC"
-                    android:textSize="14sp"
+                    android:textSize="12sp"
                     android:inputType="textMultiLine"
                     android:maxLines="3" />
             </LinearLayout>
@@ -240,513 +252,22 @@
             <Button
                 android:id="@+id/focusKeyboardButton"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="38dp"
                 android:layout_marginTop="8dp"
-                android:text="[ 키보드 열기 및 즉시 테스트 ]"
+                android:text="[ ENGAGE SOFT INPUT KEYBOARD ]"
                 android:fontFamily="monospace"
-                android:textSize="11sp"
-                android:backgroundTint="#1E293B"
+                android:textSize="10sp"
+                android:backgroundTint="#152338"
                 android:textColor="#38BDF8" />
         </LinearLayout>
 
-        <!-- Section 1: GEOMETRY & SIZING -->
+        <!-- 01: KEYBOARD KEYS & VISIBILITY -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="[ 01 // GEOMETRY &amp; SIZING ]"
+            android:text="[ 01 // KEYBOARD MATRIX &amp; VISIBILITY ]"
             android:fontFamily="monospace"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            android:textColor="#A78BFA"
-            android:layout_marginBottom="6dp" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="#121620"
-            android:padding="14dp"
-            android:layout_marginBottom="14dp">
-
-            <!-- Keyboard Height -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="keyboard_height"
-                    android:fontFamily="monospace"
-                    android:textSize="12sp"
-                    android:textColor="#E2E8F0" />
-                <TextView
-                    android:id="@+id/heightValue"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="240dp"
-                    android:fontFamily="monospace"
-                    android:textSize="12sp"
-                    android:textStyle="bold"
-                    android:textColor="#38BDF8" />
-            </LinearLayout>
-            <SeekBar
-                android:id="@+id/heightSeekBar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:max="180"
-                android:progress="60" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#1E2433"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp" />
-
-            <!-- Bottom Margin -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="margin_bottom"
-                    android:fontFamily="monospace"
-                    android:textSize="12sp"
-                    android:textColor="#E2E8F0" />
-                <TextView
-                    android:id="@+id/bottomMarginValue"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="0dp"
-                    android:fontFamily="monospace"
-                    android:textSize="12sp"
-                    android:textStyle="bold"
-                    android:textColor="#38BDF8" />
-            </LinearLayout>
-            <SeekBar
-                android:id="@+id/bottomMarginSeekBar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:max="60"
-                android:progress="0" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#1E2433"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp" />
-
-            <!-- Side Margin -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="margin_horizontal"
-                    android:fontFamily="monospace"
-                    android:textSize="12sp"
-                    android:textColor="#E2E8F0" />
-                <TextView
-                    android:id="@+id/horizontalMarginValue"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="0dp"
-                    android:fontFamily="monospace"
-                    android:textSize="12sp"
-                    android:textStyle="bold"
-                    android:textColor="#38BDF8" />
-            </LinearLayout>
-            <SeekBar
-                android:id="@+id/horizontalMarginSeekBar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:max="40"
-                android:progress="0" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#1E2433"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp" />
-
-            <!-- Key Corner Radius -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="key_corner_radius"
-                    android:fontFamily="monospace"
-                    android:textSize="12sp"
-                    android:textColor="#E2E8F0" />
-                <TextView
-                    android:id="@+id/cornerRadiusValue"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="6dp"
-                    android:fontFamily="monospace"
-                    android:textSize="12sp"
-                    android:textStyle="bold"
-                    android:textColor="#38BDF8" />
-            </LinearLayout>
-            <SeekBar
-                android:id="@+id/cornerRadiusSeekBar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:max="24"
-                android:progress="6" />
-        </LinearLayout>
-
-        <!-- Section 2: TIMINGS & TOUCH -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="[ 02 // TIMINGS &amp; GESTURES ]"
-            android:fontFamily="monospace"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            android:textColor="#FBBF24"
-            android:layout_marginBottom="6dp" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="#121620"
-            android:padding="14dp"
-            android:layout_marginBottom="14dp">
-
-            <!-- Long Press Timeout -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="long_press_delay"
-                    android:fontFamily="monospace"
-                    android:textSize="12sp"
-                    android:textColor="#E2E8F0" />
-                <TextView
-                    android:id="@+id/longPressValue"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="280ms"
-                    android:fontFamily="monospace"
-                    android:textSize="12sp"
-                    android:textStyle="bold"
-                    android:textColor="#FBBF24" />
-            </LinearLayout>
-            <SeekBar
-                android:id="@+id/longPressSeekBar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:max="50"
-                android:progress="18" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#1E2433"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp" />
-
-            <!-- Continuous Delete Hold Delay -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="backspace_hold_delay"
-                    android:fontFamily="monospace"
-                    android:textSize="12sp"
-                    android:textColor="#E2E8F0" />
-                <TextView
-                    android:id="@+id/deleteHoldValue"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="300ms"
-                    android:fontFamily="monospace"
-                    android:textSize="12sp"
-                    android:textStyle="bold"
-                    android:textColor="#FBBF24" />
-            </LinearLayout>
-            <SeekBar
-                android:id="@+id/deleteHoldSeekBar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:max="50"
-                android:progress="20" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#1E2433"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp" />
-
-            <!-- Delete Repeat Interval -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="backspace_repeat_rate"
-                    android:fontFamily="monospace"
-                    android:textSize="12sp"
-                    android:textColor="#E2E8F0" />
-                <TextView
-                    android:id="@+id/deleteRepeatValue"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="45ms"
-                    android:fontFamily="monospace"
-                    android:textSize="12sp"
-                    android:textStyle="bold"
-                    android:textColor="#FBBF24" />
-            </LinearLayout>
-            <SeekBar
-                android:id="@+id/deleteRepeatSeekBar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:max="80"
-                android:progress="25" />
-        </LinearLayout>
-
-        <!-- Section 3: HAPTICS & SOUND -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="[ 03 // HAPTICS &amp; SOUND ]"
-            android:fontFamily="monospace"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            android:textColor="#F472B6"
-            android:layout_marginBottom="6dp" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="#121620"
-            android:padding="14dp"
-            android:layout_marginBottom="14dp">
-
-            <!-- Vibration Switch -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="haptic_feedback"
-                    android:fontFamily="monospace"
-                    android:textSize="12sp"
-                    android:textColor="#E2E8F0" />
-                <Switch
-                    android:id="@+id/vibrateSwitch"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
-
-            <!-- Vibration Strength -->
-            <LinearLayout
-                android:id="@+id/vibrateStrengthContainer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginTop="8dp">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="vibration_strength"
-                        android:fontFamily="monospace"
-                        android:textSize="11sp"
-                        android:textColor="#94A3B8" />
-                    <TextView
-                        android:id="@+id/vibrateStrengthValue"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="30"
-                        android:fontFamily="monospace"
-                        android:textSize="11sp"
-                        android:textStyle="bold"
-                        android:textColor="#F472B6" />
-                </LinearLayout>
-                <SeekBar
-                    android:id="@+id/vibrateStrengthSeekBar"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:max="100"
-                    android:progress="30" />
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#1E2433"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp" />
-
-            <!-- Sound Switch -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="audio_click_sound"
-                    android:fontFamily="monospace"
-                    android:textSize="12sp"
-                    android:textColor="#E2E8F0" />
-                <Switch
-                    android:id="@+id/soundSwitch"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
-        </LinearLayout>
-
-        <!-- Section 4: LAYOUT & PREVIEW -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="[ 04 // LAYOUT &amp; PREVIEW ]"
-            android:fontFamily="monospace"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            android:textColor="#4ADE80"
-            android:layout_marginBottom="6dp" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="#121620"
-            android:padding="14dp"
-            android:layout_marginBottom="14dp">
-
-            <!-- Show Number Row -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="show_top_number_row"
-                    android:fontFamily="monospace"
-                    android:textSize="12sp"
-                    android:textColor="#E2E8F0" />
-                <Switch
-                    android:id="@+id/showNumberRowSwitch"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#1E2433"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp" />
-
-            <!-- Show Period Key -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="show_period_key"
-                    android:fontFamily="monospace"
-                    android:textSize="12sp"
-                    android:textColor="#E2E8F0" />
-                <Switch
-                    android:id="@+id/showPeriodKeySwitch"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#1E2433"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp" />
-
-            <!-- Show Key Preview Popup -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="show_key_preview_popup"
-                    android:fontFamily="monospace"
-                    android:textSize="12sp"
-                    android:textColor="#E2E8F0" />
-                <Switch
-                    android:id="@+id/showKeyPreviewSwitch"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
-        </LinearLayout>
-
-        <!-- Section 5: RICE THEMES -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="[ 05 // RICE THEMES ]"
-            android:fontFamily="monospace"
-            android:textSize="12sp"
+            android:textSize="11sp"
             android:textStyle="bold"
             android:textColor="#38BDF8"
             android:layout_marginBottom="6dp" />
@@ -755,53 +276,540 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="#121620"
+            android:background="#0E131F"
             android:padding="14dp"
-            android:layout_marginBottom="28dp">
+            android:layout_marginBottom="14dp">
 
-            <RadioGroup
-                android:id="@+id/themeRadioGroup"
+            <TextView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:text="SPEC.MATRIX: DEDICATED NUM_ROW / PUNCTUATION / SYMBOLS"
+                android:fontFamily="monospace"
+                android:textSize="9sp"
+                android:textColor="#64748B"
+                android:layout_marginBottom="10dp" />
 
-                <RadioButton
-                    android:id="@+id/themeDarkRadio"
+            <Button
+                android:id="@+id/btnToggleNumberRow"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:text="[ ● ON  |  SPEC: NUMBER ROW ]"
+                android:fontFamily="monospace"
+                android:textSize="11sp"
+                android:backgroundTint="#152338"
+                android:textColor="#4ADE80"
+                android:layout_marginBottom="6dp" />
+
+            <Button
+                android:id="@+id/btnToggleSpecialKey"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:text="[ ● ON  |  SPEC: SPECIAL KEY (@/SYM) ]"
+                android:fontFamily="monospace"
+                android:textSize="11sp"
+                android:backgroundTint="#152338"
+                android:textColor="#4ADE80"
+                android:layout_marginBottom="6dp" />
+
+            <Button
+                android:id="@+id/btnTogglePeriodKey"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:text="[ ● ON  |  SPEC: PERIOD KEY (.) ]"
+                android:fontFamily="monospace"
+                android:textSize="11sp"
+                android:backgroundTint="#152338"
+                android:textColor="#4ADE80"
+                android:layout_marginBottom="6dp" />
+
+            <Button
+                android:id="@+id/btnToggleVoiceKey"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:text="[ ● ON  |  SPEC: VOICE &amp; HANJA ACTION (漢) ]"
+                android:fontFamily="monospace"
+                android:textSize="11sp"
+                android:backgroundTint="#152338"
+                android:textColor="#4ADE80"
+                android:layout_marginBottom="6dp" />
+
+            <Button
+                android:id="@+id/btnToggleEmojiKey"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:text="[ ● ON  |  SPEC: EMOJI &amp; SYMBOL MODE ]"
+                android:fontFamily="monospace"
+                android:textSize="11sp"
+                android:backgroundTint="#152338"
+                android:textColor="#4ADE80" />
+        </LinearLayout>
+
+        <!-- 02: GEOMETRY & SIZING -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="[ 02 // GEOMETRY &amp; SPATIAL CALIBRATION ]"
+            android:fontFamily="monospace"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:textColor="#A78BFA"
+            android:layout_marginBottom="6dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#0E131F"
+            android:padding="14dp"
+            android:layout_marginBottom="14dp">
+
+            <com.example.claviatura.TerminalSliderBarView
+                android:id="@+id/sliderKeyboardHeight"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp" />
+
+            <com.example.claviatura.TerminalSliderBarView
+                android:id="@+id/sliderHorizontalMargin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp" />
+
+            <com.example.claviatura.TerminalSliderBarView
+                android:id="@+id/sliderBottomMargin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp" />
+
+            <com.example.claviatura.TerminalSliderBarView
+                android:id="@+id/sliderKeyCornerRadius"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <!-- 03: TYPING BEHAVIOR & ENGINE -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="[ 03 // TYPING BEHAVIOR &amp; AUTOMATA ]"
+            android:fontFamily="monospace"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:textColor="#F59E0B"
+            android:layout_marginBottom="6dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#0E131F"
+            android:padding="14dp"
+            android:layout_marginBottom="14dp">
+
+            <Button
+                android:id="@+id/btnToggleSystemFont"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:text="[ ○ OFF |  ENGINE: SYSTEM FONT ]"
+                android:fontFamily="monospace"
+                android:textSize="11sp"
+                android:backgroundTint="#0E131F"
+                android:textColor="#94A3B8"
+                android:layout_marginBottom="6dp" />
+
+            <Button
+                android:id="@+id/btnToggleKeyPreview"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:text="[ ● ON  |  ENGINE: CIRCULAR KEY PREVIEW ]"
+                android:fontFamily="monospace"
+                android:textSize="11sp"
+                android:backgroundTint="#152338"
+                android:textColor="#4ADE80"
+                android:layout_marginBottom="6dp" />
+
+            <Button
+                android:id="@+id/btnToggleNumberRowLandscape"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:text="[ ● ON  |  ENGINE: NUM ROW IN LANDSCAPE ]"
+                android:fontFamily="monospace"
+                android:textSize="11sp"
+                android:backgroundTint="#152338"
+                android:textColor="#4ADE80"
+                android:layout_marginBottom="6dp" />
+
+            <Button
+                android:id="@+id/btnToggleDoubleSpacePeriod"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:text="[ ● ON  |  ENGINE: DOUBLE SPACE PERIOD (.) ]"
+                android:fontFamily="monospace"
+                android:textSize="11sp"
+                android:backgroundTint="#152338"
+                android:textColor="#4ADE80"
+                android:layout_marginBottom="6dp" />
+
+            <Button
+                android:id="@+id/btnToggleAutoCapitalize"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:text="[ ○ OFF |  ENGINE: AUTO CAPITALIZE FIRST ]"
+                android:fontFamily="monospace"
+                android:textSize="11sp"
+                android:backgroundTint="#0E131F"
+                android:textColor="#94A3B8"
+                android:layout_marginBottom="6dp" />
+
+            <Button
+                android:id="@+id/btnToggleDoubleConsonant"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:text="[ ● ON  |  ENGINE: DOUBLE TAP TENSE (ㄱ+ㄱ->ㄲ) ]"
+                android:fontFamily="monospace"
+                android:textSize="11sp"
+                android:backgroundTint="#152338"
+                android:textColor="#4ADE80" />
+        </LinearLayout>
+
+        <!-- 04: TIMINGS & SENSITIVITY -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="[ 04 // TIMINGS &amp; TRANSIENT RESPONSE ]"
+            android:fontFamily="monospace"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:textColor="#EC4899"
+            android:layout_marginBottom="6dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#0E131F"
+            android:padding="14dp"
+            android:layout_marginBottom="14dp">
+
+            <com.example.claviatura.TerminalSliderBarView
+                android:id="@+id/sliderCursorSensitivity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp" />
+
+            <com.example.claviatura.TerminalSliderBarView
+                android:id="@+id/sliderLongPressTimeout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp" />
+
+            <com.example.claviatura.TerminalSliderBarView
+                android:id="@+id/sliderDeleteHoldDelay"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp" />
+
+            <com.example.claviatura.TerminalSliderBarView
+                android:id="@+id/sliderDeleteRepeatInterval"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <!-- 05: NUMBER KEYPAD TYPE -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="[ 05 // NUMERIC KEYPAD TOPOLOGY ]"
+            android:fontFamily="monospace"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:textColor="#14B8A6"
+            android:layout_marginBottom="6dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#0E131F"
+            android:padding="14dp"
+            android:layout_marginBottom="14dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="TOPOLOGY: SELECT NUMBER/SYMBOL MATRIX MODE"
+                android:fontFamily="monospace"
+                android:textSize="9sp"
+                android:textColor="#64748B"
+                android:layout_marginBottom="8dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btnNumberKeypadLinked"
+                    android:layout_width="0dp"
+                    android:layout_height="38dp"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="4dp"
+                    android:text="[ LINKED ]"
+                    android:fontFamily="monospace"
+                    android:textSize="10sp"
+                    android:backgroundTint="#152338"
+                    android:textColor="#38BDF8" />
+
+                <Button
+                    android:id="@+id/btnNumberKeypad3x4"
+                    android:layout_width="0dp"
+                    android:layout_height="38dp"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="4dp"
+                    android:text="[ 3x4 PIN ]"
+                    android:fontFamily="monospace"
+                    android:textSize="10sp"
+                    android:backgroundTint="#0E131F"
+                    android:textColor="#94A3B8" />
+
+                <Button
+                    android:id="@+id/btnNumberKeypadQwerty"
+                    android:layout_width="0dp"
+                    android:layout_height="38dp"
+                    android:layout_weight="1"
+                    android:text="[ QWERTY ]"
+                    android:fontFamily="monospace"
+                    android:textSize="10sp"
+                    android:backgroundTint="#0E131F"
+                    android:textColor="#94A3B8" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- 06: HAPTIC & AUDIO ENGINE -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="[ 06 // HAPTIC &amp; ACOUSTIC TRANSDUCER ]"
+            android:fontFamily="monospace"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:textColor="#6366F1"
+            android:layout_marginBottom="6dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#0E131F"
+            android:padding="14dp"
+            android:layout_marginBottom="14dp">
+
+            <Button
+                android:id="@+id/btnToggleSound"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:text="[ ○ OFF |  ACOUSTIC: SOUND SYNTHESIS ]"
+                android:fontFamily="monospace"
+                android:textSize="11sp"
+                android:backgroundTint="#0E131F"
+                android:textColor="#94A3B8"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="PROFILE // TRANSDUCER ACOUSTIC WAVEFORM"
+                android:fontFamily="monospace"
+                android:textSize="9sp"
+                android:textColor="#94A3B8"
+                android:layout_marginBottom="6dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="10dp">
+
+                <Button
+                    android:id="@+id/btnSoundMech"
+                    android:layout_width="0dp"
+                    android:layout_height="36dp"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="3dp"
+                    android:text="MECH"
+                    android:fontFamily="monospace"
+                    android:textSize="10sp"
+                    android:backgroundTint="#152338"
+                    android:textColor="#38BDF8" />
+
+                <Button
+                    android:id="@+id/btnSoundPop"
+                    android:layout_width="0dp"
+                    android:layout_height="36dp"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="3dp"
+                    android:text="POP"
+                    android:fontFamily="monospace"
+                    android:textSize="10sp"
+                    android:backgroundTint="#0E131F"
+                    android:textColor="#94A3B8" />
+
+                <Button
+                    android:id="@+id/btnSoundTypewriter"
+                    android:layout_width="0dp"
+                    android:layout_height="36dp"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="3dp"
+                    android:text="TYPE"
+                    android:fontFamily="monospace"
+                    android:textSize="10sp"
+                    android:backgroundTint="#0E131F"
+                    android:textColor="#94A3B8" />
+
+                <Button
+                    android:id="@+id/btnSoundTerminal"
+                    android:layout_width="0dp"
+                    android:layout_height="36dp"
+                    android:layout_weight="1"
+                    android:text="BEEP"
+                    android:fontFamily="monospace"
+                    android:textSize="10sp"
+                    android:backgroundTint="#0E131F"
+                    android:textColor="#94A3B8" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btnToggleVibrate"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:text="[ ● ON  |  HAPTIC: MOTOR VIBRATION ]"
+                android:fontFamily="monospace"
+                android:textSize="11sp"
+                android:backgroundTint="#152338"
+                android:textColor="#4ADE80"
+                android:layout_marginBottom="10dp" />
+
+            <com.example.claviatura.TerminalSliderBarView
+                android:id="@+id/sliderVibrateStrength"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <!-- 07: APPEARANCE & DARK MODE -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="[ 07 // CHROMATIC PALETTE &amp; THEME ]"
+            android:fontFamily="monospace"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:textColor="#F472B6"
+            android:layout_marginBottom="6dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#0E131F"
+            android:padding="14dp"
+            android:layout_marginBottom="24dp">
+
+            <Button
+                android:id="@+id/btnToggleDarkModeAuto"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:text="[ ○ OFF |  THEME: FOLLOW SYSTEM DARK ]"
+                android:fontFamily="monospace"
+                android:textSize="11sp"
+                android:backgroundTint="#0E131F"
+                android:textColor="#94A3B8"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="PALETTE // ANALOG &amp; EDITORIAL COLOR WAYS"
+                android:fontFamily="monospace"
+                android:textSize="9sp"
+                android:textColor="#94A3B8"
+                android:layout_marginBottom="6dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="dark       // Catppuccin Mocha"
-                    android:fontFamily="monospace"
-                    android:textSize="12sp"
-                    android:textColor="#E2E8F0"
-                    android:buttonTint="#38BDF8"
-                    android:paddingStart="8dp"
-                    android:paddingEnd="8dp" />
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="4dp">
 
-                <RadioButton
-                    android:id="@+id/themePastelBlueRadio"
+                    <Button
+                        android:id="@+id/btnThemeDark"
+                        android:layout_width="0dp"
+                        android:layout_height="36dp"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="4dp"
+                        android:text="CATPPUCCIN"
+                        android:fontFamily="monospace"
+                        android:textSize="10sp"
+                        android:backgroundTint="#152338"
+                        android:textColor="#38BDF8" />
+
+                    <Button
+                        android:id="@+id/btnThemeNord"
+                        android:layout_width="0dp"
+                        android:layout_height="36dp"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="4dp"
+                        android:text="NORD CYAN"
+                        android:fontFamily="monospace"
+                        android:textSize="10sp"
+                        android:backgroundTint="#0E131F"
+                        android:textColor="#94A3B8" />
+
+                    <Button
+                        android:id="@+id/btnThemeLight"
+                        android:layout_width="0dp"
+                        android:layout_height="36dp"
+                        android:layout_weight="1"
+                        android:text="LIGHT"
+                        android:fontFamily="monospace"
+                        android:textSize="10sp"
+                        android:backgroundTint="#0E131F"
+                        android:textColor="#94A3B8" />
+                </LinearLayout>
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="pastel_blue// Nord Cyan Slate"
-                    android:fontFamily="monospace"
-                    android:textSize="12sp"
-                    android:textColor="#E2E8F0"
-                    android:buttonTint="#38BDF8"
-                    android:paddingStart="8dp"
-                    android:paddingEnd="8dp"
-                    android:layout_marginTop="6dp" />
+                    android:orientation="horizontal">
 
-                <RadioButton
-                    android:id="@+id/themeLightRadio"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="light      // Clean Minimalist"
-                    android:fontFamily="monospace"
-                    android:textSize="12sp"
-                    android:textColor="#E2E8F0"
-                    android:buttonTint="#38BDF8"
-                    android:paddingStart="8dp"
-                    android:paddingEnd="8dp"
-                    android:layout_marginTop="6dp" />
-            </RadioGroup>
+                    <Button
+                        android:id="@+id/btnThemeMatrix"
+                        android:layout_width="0dp"
+                        android:layout_height="36dp"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="4dp"
+                        android:text="MATRIX GREEN"
+                        android:fontFamily="monospace"
+                        android:textSize="10sp"
+                        android:backgroundTint="#0E131F"
+                        android:textColor="#94A3B8" />
+
+                    <Button
+                        android:id="@+id/btnThemeGruvbox"
+                        android:layout_width="0dp"
+                        android:layout_height="36dp"
+                        android:layout_weight="1"
+                        android:text="GRUVBOX"
+                        android:fontFamily="monospace"
+                        android:textSize="10sp"
+                        android:backgroundTint="#0E131F"
+                        android:textColor="#94A3B8" />
+                </LinearLayout>
+            </LinearLayout>
         </LinearLayout>
 
     </LinearLayout>

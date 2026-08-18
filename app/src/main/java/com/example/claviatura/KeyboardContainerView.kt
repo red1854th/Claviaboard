@@ -15,6 +15,7 @@ class KeyboardContainerView(
 ) : LinearLayout(context) {
 
     private val keyboardBodyView: FrameLayout = FrameLayout(context)
+    val topHeadroomDp: Int = 74
 
     init {
         orientation = VERTICAL
@@ -29,7 +30,7 @@ class KeyboardContainerView(
         keyboardBodyView.clipToPadding = false
         keyboardBodyView.layoutParams = LayoutParams(
             LayoutParams.MATCH_PARENT,
-            LayoutParams.MATCH_PARENT
+            LayoutParams.WRAP_CONTENT
         )
         addView(keyboardBodyView)
     }
@@ -38,8 +39,12 @@ class KeyboardContainerView(
         val hMargin = dpToPx(prefs.horizontalMargin)
         val bMargin = dpToPx(prefs.bottomMargin)
         val keyHeight = dpToPx(prefs.keyboardHeight)
-        val totalHeight = keyHeight + bMargin
-        setPadding(hMargin, 0, hMargin, bMargin)
+        val topHeadroomPx = dpToPx(topHeadroomDp)
+        
+        // Full container height includes the transparent top headroom for unclipped circular previews
+        val totalHeight = keyHeight + bMargin + topHeadroomPx
+        setPadding(hMargin, topHeadroomPx, hMargin, bMargin)
+        
         val newHeightSpec = MeasureSpec.makeMeasureSpec(totalHeight, MeasureSpec.EXACTLY)
         super.onMeasure(widthMeasureSpec, newHeightSpec)
     }
@@ -50,9 +55,20 @@ class KeyboardContainerView(
             view,
             FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT,
-                FrameLayout.LayoutParams.MATCH_PARENT
+                dpToPx(prefs.keyboardHeight)
             )
         )
+    }
+
+    fun updateKeyboardContentHeight() {
+        if (keyboardBodyView.childCount > 0) {
+            val child = keyboardBodyView.getChildAt(0)
+            child.layoutParams = FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                dpToPx(prefs.keyboardHeight)
+            )
+        }
+        requestLayout()
     }
 
     private fun dpToPx(dp: Int): Int = (dp * resources.displayMetrics.density).toInt()

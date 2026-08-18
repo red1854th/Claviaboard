@@ -27,6 +27,12 @@
         <activity
             android:name=".KeyboardSettingsActivity"
             android:exported="false" />
+        <activity
+            android:name=".LanguageSettingsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".KeyboardLayoutSelectActivity"
+            android:exported="false" />
         <service
             android:name=".KeyboardService"
             android:label="@string/app_name"

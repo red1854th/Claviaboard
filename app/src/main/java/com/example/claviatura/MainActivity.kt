@@ -2,16 +2,14 @@ package com.example.claviatura
 
 import android.content.Context
 import android.content.Intent
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.os.Bundle
-import android.provider.Settings
 import android.provider.Settings.Secure
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
-import android.widget.RadioGroup
-import android.widget.SeekBar
-import android.widget.Switch
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 
@@ -21,9 +19,9 @@ class MainActivity : AppCompatActivity() {
 
     // System & Status
     private lateinit var riceThemeBadge: TextView
-    private lateinit var activationPromptCard: View
-    private lateinit var enableImeButton: Button
-    private lateinit var selectImeButton: Button
+    private lateinit var mainKoreanLayoutBadge: TextView
+    private lateinit var mainEnglishLayoutBadge: TextView
+    private lateinit var btnLanguageSettings: View
 
     // Live Sandbox
     private lateinit var testEditText: EditText
@@ -32,73 +30,56 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
 
         prefs = KeyboardPreferences(this)
 
-        initRiceHeaderAndActivation()
+        if (!isKeyboardEnabled() || !isKeyboardSelectedAsDefault()) {
+            startActivity(Intent(this, OnboardingActivity::class.java))
+            finish()
+            return
+        }
+
+        setContentView(R.layout.activity_main)
+
+        initRiceHeaderAndLanguageCard()
         initLiveSandbox()
-        initGeometryControls()
-        initTimingControls()
-        initHapticAndSoundControls()
-        initLayoutAndPreviewControls()
+        initKeyVisibilityControls()
+        initGeometrySliders()
+        initTypingBehaviorControls()
+        initTimingSliders()
+        initNumberKeypadControls()
+        initHapticAndAudioControls()
         initThemeControls()
     }
 
     override fun onResume() {
         super.onResume()
-        checkActivationState()
-        updateThemeBadge()
+        if (!isKeyboardEnabled() || !isKeyboardSelectedAsDefault()) {
+            startActivity(Intent(this, OnboardingActivity::class.java))
+            finish()
+            return
+        }
+        updateBadges()
     }
 
-    private fun initRiceHeaderAndActivation() {
+    private fun initRiceHeaderAndLanguageCard() {
         riceThemeBadge = findViewById(R.id.riceThemeBadge)
-        activationPromptCard = findViewById(R.id.activationPromptCard)
-        enableImeButton = findViewById(R.id.enableImeButton)
-        selectImeButton = findViewById(R.id.selectImeButton)
+        mainKoreanLayoutBadge = findViewById(R.id.mainKoreanLayoutBadge)
+        mainEnglishLayoutBadge = findViewById(R.id.mainEnglishLayoutBadge)
+        btnLanguageSettings = findViewById(R.id.btnLanguageSettings)
 
-        enableImeButton.setOnClickListener {
-            val intent = Intent(Settings.ACTION_INPUT_METHOD_SETTINGS).apply {
-                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            }
-            startActivity(intent)
+        btnLanguageSettings.setOnClickListener {
+            startActivity(Intent(this, LanguageSettingsActivity::class.java))
         }
 
-        selectImeButton.setOnClickListener {
-            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.showInputMethodPicker()
-        }
-
-        checkActivationState()
-        updateThemeBadge()
+        updateBadges()
     }
 
-    private fun checkActivationState() {
-        val enabled = isKeyboardEnabled()
-        val defaultSelected = isKeyboardSelectedAsDefault()
-
-        if (enabled && defaultSelected) {
-            // Already active and default: hide activation prompt completely
-            activationPromptCard.visibility = View.GONE
-        } else {
-            // Needs activation: show sleek inline prompt
-            activationPromptCard.visibility = View.VISIBLE
-            val desc = findViewById<TextView>(R.id.activationDescription)
-            if (!enabled) {
-                desc.text = "❯ STEP 1: 시스템 설정에서 Claviatura 키보드를 활성화하세요."
-            } else {
-                desc.text = "❯ STEP 2: 기본 입력 방법을 Claviatura로 전환하세요."
-            }
-        }
-    }
-
-    private fun updateThemeBadge() {
-        val themeName = when (prefs.selectedThemeId) {
-            "dark" -> "Catppuccin Mocha [Dark]"
-            "pastel_blue" -> "Nord Cyan Slate [Pastel]"
-            else -> "Clean Minimalist [Light]"
-        }
-        riceThemeBadge.text = "❯ THEME   : $themeName"
+    private fun updateBadges() {
+        mainKoreanLayoutBadge.text = "❯ KOREAN  : ${prefs.koreanLayoutType}"
+        mainEnglishLayoutBadge.text = "❯ ENGLISH : ${prefs.englishLayoutType}"
+        val theme = KeyboardTheme.getThemeById(prefs.selectedThemeId)
+        riceThemeBadge.text = "❯ THEME   : ${theme.name}"
     }
 
     private fun initLiveSandbox() {
@@ -117,212 +98,381 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun initGeometryControls() {
-        // 1. Height: 180 ~ 360 (progress: 0 ~ 180, offset: 180)
-        val heightSeekBar = findViewById<SeekBar>(R.id.heightSeekBar)
-        val heightValue = findViewById<TextView>(R.id.heightValue)
-        val currentHeight = prefs.keyboardHeight.coerceIn(180, 360)
-        heightSeekBar.progress = currentHeight - 180
-        heightValue.text = "${currentHeight}dp"
+    // 01: KEYBOARD KEYS & VISIBILITY
+    private fun initKeyVisibilityControls() {
+        val btnToggleNumberRow = findViewById<Button>(R.id.btnToggleNumberRow)
+        val btnToggleSpecialKey = findViewById<Button>(R.id.btnToggleSpecialKey)
+        val btnTogglePeriodKey = findViewById<Button>(R.id.btnTogglePeriodKey)
+        val btnToggleVoiceKey = findViewById<Button>(R.id.btnToggleVoiceKey)
+        val btnToggleEmojiKey = findViewById<Button>(R.id.btnToggleEmojiKey)
 
-        heightSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                val value = 180 + progress
-                prefs.keyboardHeight = value
-                heightValue.text = "${value}dp"
-            }
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
-        })
+        updateToggleButton(btnToggleNumberRow, "NUMBER ROW", prefs.showNumberRow)
+        updateToggleButton(btnToggleSpecialKey, "SPECIAL KEY (@/SYM)", prefs.showSpecialKey)
+        updateToggleButton(btnTogglePeriodKey, "PERIOD KEY (.)", prefs.showPeriodKey)
+        updateToggleButton(btnToggleVoiceKey, "VOICE / ACTION (漢)", prefs.showVoiceKey)
+        updateToggleButton(btnToggleEmojiKey, "EMOJI / SYMBOL", prefs.showEmojiKey)
 
-        // 2. Bottom Margin: 0 ~ 60
-        val bottomMarginSeekBar = findViewById<SeekBar>(R.id.bottomMarginSeekBar)
-        val bottomMarginValue = findViewById<TextView>(R.id.bottomMarginValue)
-        val currentBottomMargin = prefs.bottomMargin.coerceIn(0, 60)
-        bottomMarginSeekBar.progress = currentBottomMargin
-        bottomMarginValue.text = "${currentBottomMargin}dp"
-
-        bottomMarginSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                prefs.bottomMargin = progress
-                bottomMarginValue.text = "${progress}dp"
-            }
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
-        })
-
-        // 3. Side Margin: 0 ~ 40
-        val horizontalMarginSeekBar = findViewById<SeekBar>(R.id.horizontalMarginSeekBar)
-        val horizontalMarginValue = findViewById<TextView>(R.id.horizontalMarginValue)
-        val currentHMargin = prefs.horizontalMargin.coerceIn(0, 40)
-        horizontalMarginSeekBar.progress = currentHMargin
-        horizontalMarginValue.text = "${currentHMargin}dp"
-
-        horizontalMarginSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                prefs.horizontalMargin = progress
-                horizontalMarginValue.text = "${progress}dp"
-            }
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
-        })
-
-        // 4. Corner Radius: 0 ~ 24
-        val cornerRadiusSeekBar = findViewById<SeekBar>(R.id.cornerRadiusSeekBar)
-        val cornerRadiusValue = findViewById<TextView>(R.id.cornerRadiusValue)
-        val currentRadius = prefs.keyCornerRadius.coerceIn(0, 24)
-        cornerRadiusSeekBar.progress = currentRadius
-        cornerRadiusValue.text = "${currentRadius}dp"
-
-        cornerRadiusSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                prefs.keyCornerRadius = progress
-                cornerRadiusValue.text = "${progress}dp"
-            }
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
-        })
-    }
-
-    private fun initTimingControls() {
-        // 1. Long Press Timeout: 100 ~ 600ms (progress: 0 ~ 50, step: 10ms, offset: 100ms)
-        val longPressSeekBar = findViewById<SeekBar>(R.id.longPressSeekBar)
-        val longPressValue = findViewById<TextView>(R.id.longPressValue)
-        val currentLongPress = prefs.longPressTimeout.toInt().coerceIn(100, 600)
-        longPressSeekBar.progress = (currentLongPress - 100) / 10
-        longPressValue.text = "${currentLongPress}ms"
-
-        longPressSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                val value = 100L + (progress * 10L)
-                prefs.longPressTimeout = value
-                longPressValue.text = "${value}ms"
-            }
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
-        })
-
-        // 2. Continuous Delete Hold Delay: 100 ~ 600ms
-        val deleteHoldSeekBar = findViewById<SeekBar>(R.id.deleteHoldSeekBar)
-        val deleteHoldValue = findViewById<TextView>(R.id.deleteHoldValue)
-        val currentDeleteHold = prefs.deleteHoldDelay.toInt().coerceIn(100, 600)
-        deleteHoldSeekBar.progress = (currentDeleteHold - 100) / 10
-        deleteHoldValue.text = "${currentDeleteHold}ms"
-
-        deleteHoldSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                val value = 100L + (progress * 10L)
-                prefs.deleteHoldDelay = value
-                deleteHoldValue.text = "${value}ms"
-            }
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
-        })
-
-        // 3. Delete Repeat Speed: 20 ~ 100ms
-        val deleteRepeatSeekBar = findViewById<SeekBar>(R.id.deleteRepeatSeekBar)
-        val deleteRepeatValue = findViewById<TextView>(R.id.deleteRepeatValue)
-        val currentRepeat = prefs.deleteRepeatInterval.toInt().coerceIn(20, 100)
-        deleteRepeatSeekBar.progress = currentRepeat - 20
-        deleteRepeatValue.text = "${currentRepeat}ms"
-
-        deleteRepeatSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                val value = 20L + progress
-                prefs.deleteRepeatInterval = value
-                deleteRepeatValue.text = "${value}ms"
-            }
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
-        })
-    }
-
-    private fun initHapticAndSoundControls() {
-        val strengthContainer = findViewById<View>(R.id.vibrateStrengthContainer)
-        val vibrateSwitch = findViewById<Switch>(R.id.vibrateSwitch)
-
-        vibrateSwitch.isChecked = prefs.vibrateEnabled
-        strengthContainer.visibility = if (prefs.vibrateEnabled) View.VISIBLE else View.GONE
-
-        vibrateSwitch.setOnCheckedChangeListener { _, isChecked ->
-            prefs.vibrateEnabled = isChecked
-            strengthContainer.visibility = if (isChecked) View.VISIBLE else View.GONE
+        btnToggleNumberRow.setOnClickListener {
+            prefs.showNumberRow = !prefs.showNumberRow
+            updateToggleButton(btnToggleNumberRow, "NUMBER ROW", prefs.showNumberRow)
         }
 
-        val strengthSeekBar = findViewById<SeekBar>(R.id.vibrateStrengthSeekBar)
-        val strengthValue = findViewById<TextView>(R.id.vibrateStrengthValue)
-        val currentStrength = prefs.vibrateStrength.coerceIn(5, 100)
-        strengthSeekBar.progress = currentStrength
-        strengthValue.text = "$currentStrength"
+        btnToggleSpecialKey.setOnClickListener {
+            prefs.showSpecialKey = !prefs.showSpecialKey
+            updateToggleButton(btnToggleSpecialKey, "SPECIAL KEY (@/SYM)", prefs.showSpecialKey)
+        }
 
-        strengthSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                val strength = progress.coerceAtLeast(5)
-                prefs.vibrateStrength = strength
-                strengthValue.text = "$strength"
-            }
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
-        })
+        btnTogglePeriodKey.setOnClickListener {
+            prefs.showPeriodKey = !prefs.showPeriodKey
+            updateToggleButton(btnTogglePeriodKey, "PERIOD KEY (.)", prefs.showPeriodKey)
+        }
 
-        findViewById<Switch>(R.id.soundSwitch).apply {
-            isChecked = prefs.soundEnabled
-            setOnCheckedChangeListener { _, isChecked -> prefs.soundEnabled = isChecked }
+        btnToggleVoiceKey.setOnClickListener {
+            prefs.showVoiceKey = !prefs.showVoiceKey
+            updateToggleButton(btnToggleVoiceKey, "VOICE / ACTION (漢)", prefs.showVoiceKey)
+        }
+
+        btnToggleEmojiKey.setOnClickListener {
+            prefs.showEmojiKey = !prefs.showEmojiKey
+            updateToggleButton(btnToggleEmojiKey, "EMOJI / SYMBOL", prefs.showEmojiKey)
         }
     }
 
-    private fun initLayoutAndPreviewControls() {
-        findViewById<Switch>(R.id.showNumberRowSwitch).apply {
-            isChecked = prefs.showNumberRow
-            setOnCheckedChangeListener { _, isChecked -> prefs.showNumberRow = isChecked }
+    // 02: GEOMETRY & SIZING (Terminal Sliders)
+    private fun initGeometrySliders() {
+        val sliderHeight = findViewById<TerminalSliderBarView>(R.id.sliderKeyboardHeight)
+        sliderHeight.apply {
+            label = "keyboard_height"
+            unit = "dp"
+            minValue = 180
+            maxValue = 360
+            stepSize = 4
+            showPercent = true
+            currentValue = prefs.keyboardHeight
+            accentColor = Color.parseColor("#38BDF8")
+            onValueChanged = { prefs.keyboardHeight = it }
         }
 
-        findViewById<Switch>(R.id.showPeriodKeySwitch).apply {
-            isChecked = prefs.showPeriodKey
-            setOnCheckedChangeListener { _, isChecked -> prefs.showPeriodKey = isChecked }
+        val sliderHMargin = findViewById<TerminalSliderBarView>(R.id.sliderHorizontalMargin)
+        sliderHMargin.apply {
+            label = "horizontal_margin"
+            unit = "dp"
+            minValue = 0
+            maxValue = 32
+            stepSize = 1
+            showPercent = false
+            currentValue = prefs.horizontalMargin
+            accentColor = Color.parseColor("#38BDF8")
+            onValueChanged = { prefs.horizontalMargin = it }
         }
 
-        findViewById<Switch>(R.id.showKeyPreviewSwitch).apply {
-            isChecked = prefs.showKeyPreview
-            setOnCheckedChangeListener { _, isChecked -> prefs.showKeyPreview = isChecked }
+        val sliderBMargin = findViewById<TerminalSliderBarView>(R.id.sliderBottomMargin)
+        sliderBMargin.apply {
+            label = "bottom_margin"
+            unit = "dp"
+            minValue = 0
+            maxValue = 48
+            stepSize = 2
+            showPercent = false
+            currentValue = prefs.bottomMargin
+            accentColor = Color.parseColor("#38BDF8")
+            onValueChanged = { prefs.bottomMargin = it }
+        }
+
+        val sliderCornerRadius = findViewById<TerminalSliderBarView>(R.id.sliderKeyCornerRadius)
+        sliderCornerRadius.apply {
+            label = "key_corner_radius"
+            unit = "px"
+            minValue = 0
+            maxValue = 16
+            stepSize = 1
+            showPercent = false
+            currentValue = prefs.keyCornerRadius
+            accentColor = Color.parseColor("#38BDF8")
+            onValueChanged = { prefs.keyCornerRadius = it }
         }
     }
 
+    // 03: TYPING BEHAVIOR & ENGINE
+    private fun initTypingBehaviorControls() {
+        val btnToggleSystemFont = findViewById<Button>(R.id.btnToggleSystemFont)
+        val btnToggleKeyPreview = findViewById<Button>(R.id.btnToggleKeyPreview)
+        val btnToggleNumberRowLandscape = findViewById<Button>(R.id.btnToggleNumberRowLandscape)
+        val btnToggleDoubleSpacePeriod = findViewById<Button>(R.id.btnToggleDoubleSpacePeriod)
+        val btnToggleAutoCapitalize = findViewById<Button>(R.id.btnToggleAutoCapitalize)
+        val btnToggleDoubleConsonant = findViewById<Button>(R.id.btnToggleDoubleConsonant)
+
+        updateToggleButton(btnToggleSystemFont, "USE SYSTEM FONT", prefs.useSystemFont)
+        updateToggleButton(btnToggleKeyPreview, "KEY POPUP PREVIEW", prefs.showKeyPreview)
+        updateToggleButton(btnToggleNumberRowLandscape, "NUMBER ROW IN LANDSCAPE", prefs.numberRowLandscape)
+        updateToggleButton(btnToggleDoubleSpacePeriod, "DOUBLE SPACE PERIOD (.)", prefs.doubleSpacePeriod)
+        updateToggleButton(btnToggleAutoCapitalize, "AUTO CAPITALIZE FIRST LETTER", prefs.autoCapitalize)
+        updateToggleButton(btnToggleDoubleConsonant, "DOUBLE TAP TENSE CONSONANT (ㄱ+ㄱ->ㄲ)", prefs.doubleConsonantMode)
+
+        btnToggleSystemFont.setOnClickListener {
+            prefs.useSystemFont = !prefs.useSystemFont
+            updateToggleButton(btnToggleSystemFont, "USE SYSTEM FONT", prefs.useSystemFont)
+        }
+
+        btnToggleKeyPreview.setOnClickListener {
+            prefs.showKeyPreview = !prefs.showKeyPreview
+            updateToggleButton(btnToggleKeyPreview, "KEY POPUP PREVIEW", prefs.showKeyPreview)
+        }
+
+        btnToggleNumberRowLandscape.setOnClickListener {
+            prefs.numberRowLandscape = !prefs.numberRowLandscape
+            updateToggleButton(btnToggleNumberRowLandscape, "NUMBER ROW IN LANDSCAPE", prefs.numberRowLandscape)
+        }
+
+        btnToggleDoubleSpacePeriod.setOnClickListener {
+            prefs.doubleSpacePeriod = !prefs.doubleSpacePeriod
+            updateToggleButton(btnToggleDoubleSpacePeriod, "DOUBLE SPACE PERIOD (.)", prefs.doubleSpacePeriod)
+        }
+
+        btnToggleAutoCapitalize.setOnClickListener {
+            prefs.autoCapitalize = !prefs.autoCapitalize
+            updateToggleButton(btnToggleAutoCapitalize, "AUTO CAPITALIZE FIRST LETTER", prefs.autoCapitalize)
+        }
+
+        btnToggleDoubleConsonant.setOnClickListener {
+            prefs.doubleConsonantMode = !prefs.doubleConsonantMode
+            updateToggleButton(btnToggleDoubleConsonant, "DOUBLE TAP TENSE CONSONANT (ㄱ+ㄱ->ㄲ)", prefs.doubleConsonantMode)
+        }
+    }
+
+    // 04: TIMINGS & SENSITIVITY (Terminal Sliders)
+    private fun initTimingSliders() {
+        val sliderSensitivity = findViewById<TerminalSliderBarView>(R.id.sliderCursorSensitivity)
+        sliderSensitivity.apply {
+            label = "cursor_sensitivity"
+            unit = " Level"
+            minValue = 1
+            maxValue = 10
+            stepSize = 1
+            showPercent = false
+            currentValue = prefs.cursorSensitivity
+            accentColor = Color.parseColor("#EC4899")
+            onValueChanged = { prefs.cursorSensitivity = it }
+        }
+
+        val sliderLongPress = findViewById<TerminalSliderBarView>(R.id.sliderLongPressTimeout)
+        sliderLongPress.apply {
+            label = "long_press_delay"
+            unit = "ms"
+            minValue = 100
+            maxValue = 900
+            stepSize = 25
+            showPercent = false
+            currentValue = prefs.longPressTimeout.toInt()
+            accentColor = Color.parseColor("#EC4899")
+            onValueChanged = { prefs.longPressTimeout = it.toLong() }
+        }
+
+        val sliderDeleteHold = findViewById<TerminalSliderBarView>(R.id.sliderDeleteHoldDelay)
+        sliderDeleteHold.apply {
+            label = "backspace_hold_delay"
+            unit = "ms"
+            minValue = 100
+            maxValue = 600
+            stepSize = 25
+            showPercent = false
+            currentValue = prefs.deleteHoldDelay.toInt()
+            accentColor = Color.parseColor("#EC4899")
+            onValueChanged = { prefs.deleteHoldDelay = it.toLong() }
+        }
+
+        val sliderDeleteRate = findViewById<TerminalSliderBarView>(R.id.sliderDeleteRepeatInterval)
+        sliderDeleteRate.apply {
+            label = "backspace_repeat_rate"
+            unit = "ms"
+            minValue = 20
+            maxValue = 100
+            stepSize = 5
+            showPercent = false
+            currentValue = prefs.deleteRepeatInterval.toInt()
+            accentColor = Color.parseColor("#EC4899")
+            onValueChanged = { prefs.deleteRepeatInterval = it.toLong() }
+        }
+    }
+
+    // 05: NUMBER KEYPAD TYPE
+    private fun initNumberKeypadControls() {
+        val btnLinked = findViewById<Button>(R.id.btnNumberKeypadLinked)
+        val btn3x4 = findViewById<Button>(R.id.btnNumberKeypad3x4)
+        val btnQwerty = findViewById<Button>(R.id.btnNumberKeypadQwerty)
+        val buttons = listOf(btnLinked, btn3x4, btnQwerty)
+
+        fun updateSelection() {
+            when (prefs.numberKeypadType) {
+                "pin_3x4" -> selectChip(btn3x4, buttons, "#14B8A6")
+                "qwerty" -> selectChip(btnQwerty, buttons, "#14B8A6")
+                else -> selectChip(btnLinked, buttons, "#14B8A6")
+            }
+        }
+
+        btnLinked.setOnClickListener {
+            prefs.numberKeypadType = "linked"
+            updateSelection()
+        }
+        btn3x4.setOnClickListener {
+            prefs.numberKeypadType = "pin_3x4"
+            updateSelection()
+        }
+        btnQwerty.setOnClickListener {
+            prefs.numberKeypadType = "qwerty"
+            updateSelection()
+        }
+
+        updateSelection()
+    }
+
+    // 06: HAPTIC & AUDIO ENGINE
+    private fun initHapticAndAudioControls() {
+        val btnToggleSound = findViewById<Button>(R.id.btnToggleSound)
+        updateToggleButton(btnToggleSound, "KEYBOARD SOUND", prefs.soundEnabled)
+        btnToggleSound.setOnClickListener {
+            prefs.soundEnabled = !prefs.soundEnabled
+            updateToggleButton(btnToggleSound, "KEYBOARD SOUND", prefs.soundEnabled)
+        }
+
+        val btnSoundMech = findViewById<Button>(R.id.btnSoundMech)
+        val btnSoundPop = findViewById<Button>(R.id.btnSoundPop)
+        val btnSoundTypewriter = findViewById<Button>(R.id.btnSoundTypewriter)
+        val btnSoundTerminal = findViewById<Button>(R.id.btnSoundTerminal)
+        val soundButtons = listOf(btnSoundMech, btnSoundPop, btnSoundTypewriter, btnSoundTerminal)
+
+        fun updateSoundSelection() {
+            when (prefs.soundProfile) {
+                "soft_pop" -> selectChip(btnSoundPop, soundButtons, "#38BDF8")
+                "classic_typewriter" -> selectChip(btnSoundTypewriter, soundButtons, "#38BDF8")
+                "terminal_beep" -> selectChip(btnSoundTerminal, soundButtons, "#38BDF8")
+                else -> selectChip(btnSoundMech, soundButtons, "#38BDF8")
+            }
+        }
+
+        btnSoundMech.setOnClickListener {
+            prefs.soundProfile = "mech_click"
+            updateSoundSelection()
+        }
+        btnSoundPop.setOnClickListener {
+            prefs.soundProfile = "soft_pop"
+            updateSoundSelection()
+        }
+        btnSoundTypewriter.setOnClickListener {
+            prefs.soundProfile = "classic_typewriter"
+            updateSoundSelection()
+        }
+        btnSoundTerminal.setOnClickListener {
+            prefs.soundProfile = "terminal_beep"
+            updateSoundSelection()
+        }
+        updateSoundSelection()
+
+        val btnToggleVibrate = findViewById<Button>(R.id.btnToggleVibrate)
+        updateToggleButton(btnToggleVibrate, "KEYBOARD VIBRATION", prefs.vibrateEnabled)
+        btnToggleVibrate.setOnClickListener {
+            prefs.vibrateEnabled = !prefs.vibrateEnabled
+            updateToggleButton(btnToggleVibrate, "KEYBOARD VIBRATION", prefs.vibrateEnabled)
+        }
+
+        val sliderVibrate = findViewById<TerminalSliderBarView>(R.id.sliderVibrateStrength)
+        sliderVibrate.apply {
+            label = "vibration_strength"
+            unit = "%"
+            minValue = 0
+            maxValue = 100
+            stepSize = 5
+            showPercent = false
+            currentValue = prefs.vibrateStrength
+            accentColor = Color.parseColor("#6366F1")
+            onValueChanged = { prefs.vibrateStrength = it }
+        }
+    }
+
+    // 07: APPEARANCE & DARK MODE
     private fun initThemeControls() {
-        val radioGroup = findViewById<RadioGroup>(R.id.themeRadioGroup)
-        when (prefs.selectedThemeId) {
-            "light" -> radioGroup.check(R.id.themeLightRadio)
-            "pastel_blue" -> radioGroup.check(R.id.themePastelBlueRadio)
-            else -> radioGroup.check(R.id.themeDarkRadio)
+        val btnToggleDarkModeAuto = findViewById<Button>(R.id.btnToggleDarkModeAuto)
+        updateToggleButton(btnToggleDarkModeAuto, "FOLLOW SYSTEM DARK MODE", prefs.followSystemDarkMode)
+        btnToggleDarkModeAuto.setOnClickListener {
+            prefs.followSystemDarkMode = !prefs.followSystemDarkMode
+            updateToggleButton(btnToggleDarkModeAuto, "FOLLOW SYSTEM DARK MODE", prefs.followSystemDarkMode)
         }
 
-        radioGroup.setOnCheckedChangeListener { _, checkedId ->
-            when (checkedId) {
-                R.id.themeLightRadio -> prefs.selectedThemeId = "light"
-                R.id.themePastelBlueRadio -> prefs.selectedThemeId = "pastel_blue"
-                else -> prefs.selectedThemeId = "dark"
+        val btnThemeDark = findViewById<Button>(R.id.btnThemeDark)
+        val btnThemeNord = findViewById<Button>(R.id.btnThemeNord)
+        val btnThemeLight = findViewById<Button>(R.id.btnThemeLight)
+        val btnThemeMatrix = findViewById<Button>(R.id.btnThemeMatrix)
+        val btnThemeGruvbox = findViewById<Button>(R.id.btnThemeGruvbox)
+        val themeButtons = listOf(btnThemeDark, btnThemeNord, btnThemeLight, btnThemeMatrix, btnThemeGruvbox)
+
+        fun updateThemeSelection() {
+            when (prefs.selectedThemeId) {
+                "pastel_blue" -> selectChip(btnThemeNord, themeButtons, "#38BDF8")
+                "light" -> selectChip(btnThemeLight, themeButtons, "#F59E0B")
+                "matrix" -> selectChip(btnThemeMatrix, themeButtons, "#4ADE80")
+                "gruvbox" -> selectChip(btnThemeGruvbox, themeButtons, "#FE8019")
+                else -> selectChip(btnThemeDark, themeButtons, "#38BDF8")
             }
-            updateThemeBadge()
+            updateBadges()
+        }
+
+        btnThemeDark.setOnClickListener {
+            prefs.selectedThemeId = "dark"
+            updateThemeSelection()
+        }
+        btnThemeNord.setOnClickListener {
+            prefs.selectedThemeId = "pastel_blue"
+            updateThemeSelection()
+        }
+        btnThemeLight.setOnClickListener {
+            prefs.selectedThemeId = "light"
+            updateThemeSelection()
+        }
+        btnThemeMatrix.setOnClickListener {
+            prefs.selectedThemeId = "matrix"
+            updateThemeSelection()
+        }
+        btnThemeGruvbox.setOnClickListener {
+            prefs.selectedThemeId = "gruvbox"
+            updateThemeSelection()
+        }
+
+        updateThemeSelection()
+    }
+
+    private fun updateToggleButton(button: Button, label: String, enabled: Boolean) {
+        if (enabled) {
+            button.text = "[ ● ON  |  $label ]"
+            button.setTextColor(Color.parseColor("#4ADE80"))
+            button.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#152338"))
+        } else {
+            button.text = "[ ○ OFF |  $label ]"
+            button.setTextColor(Color.parseColor("#94A3B8"))
+            button.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#0E131F"))
+        }
+    }
+
+    private fun selectChip(selectedBtn: Button, allButtons: List<Button>, activeColor: String = "#38BDF8") {
+        allButtons.forEach { btn ->
+            if (btn == selectedBtn) {
+                btn.setTextColor(Color.parseColor(activeColor))
+                btn.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#152338"))
+            } else {
+                btn.setTextColor(Color.parseColor("#64748B"))
+                btn.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#0E131F"))
+            }
         }
     }
 
     private fun isKeyboardEnabled(): Boolean {
-        return try {
-            val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            inputMethodManager.enabledInputMethodList.any { method ->
-                method.packageName == packageName
-            }
-        } catch (_: Exception) {
-            false
-        }
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        val enabledMethods = imm.enabledInputMethodList
+        val myPackage = packageName
+        return enabledMethods.any { it.packageName == myPackage }
     }
 
     private fun isKeyboardSelectedAsDefault(): Boolean {
-        return try {
-            val defaultIme = Secure.getString(contentResolver, Secure.DEFAULT_INPUT_METHOD)
-            defaultIme != null && (defaultIme.startsWith("${packageName}/") || defaultIme == packageName)
-        } catch (_: Exception) {
-            false
-        }
+        val currentIme = Secure.getString(contentResolver, Secure.DEFAULT_INPUT_METHOD)
+        return currentIme != null && currentIme.contains(packageName)
     }
 }

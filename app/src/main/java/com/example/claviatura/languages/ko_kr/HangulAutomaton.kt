@@ -22,6 +22,8 @@ class HangulAutomaton {
     private var jung = -1
     private var jong = 0
 
+    var doubleConsonantEnabled: Boolean = true
+
     fun reset() {
         cho = -1
         jung = -1
@@ -50,6 +52,14 @@ class HangulAutomaton {
             cho = newCho
             return ""
         } else if (jung == -1) {
+            // Check double consonant feature (e.g. ㄱ + ㄱ -> ㄲ)
+            if (doubleConsonantEnabled) {
+                val tenseCho = getTenseConsonant(choList[cho], c)
+                if (tenseCho != null) {
+                    cho = choList.indexOf(tenseCho)
+                    return ""
+                }
+            }
             val committed = choList[cho].toString()
             cho = newCho
             return committed
@@ -65,6 +75,18 @@ class HangulAutomaton {
                 return committed
             }
         } else {
+            // Check double consonant in jongseong (e.g. ㅅ + ㅅ -> ㅆ)
+            if (doubleConsonantEnabled) {
+                val curJongChar = jongList[jong]
+                if (curJongChar == 'ㅅ' && c == 'ㅅ') {
+                    jong = jongList.indexOf('ㅆ')
+                    return ""
+                } else if (curJongChar == 'ㄱ' && c == 'ㄱ') {
+                    jong = jongList.indexOf('ㄲ')
+                    return ""
+                }
+            }
+
             val combinedJong = combineJong(jong, newCho)
             if (combinedJong > 0) {
                 jong = combinedJong
@@ -78,6 +100,18 @@ class HangulAutomaton {
         }
     }
 
+    private fun getTenseConsonant(c1: Char, c2: Char): Char? {
+        if (c1 != c2) return null
+        return when (c1) {
+            'ㄱ' -> 'ㄲ'
+            'ㄷ' -> 'ㄸ'
+            'ㅂ' -> 'ㅃ'
+            'ㅅ' -> 'ㅆ'
+            'ㅈ' -> 'ㅉ'
+            else -> null
+        }
+    }
+
     private fun handleJungInput(c: Char): String {
         val newJung = jungList.indexOf(c)
 
@@ -86,11 +120,9 @@ class HangulAutomaton {
             reset()
             return committed + c
         } else if (jung == -1) {
-            // 초성만 있을 때 모음('ㅣ' 포함) 입력 시 초성+중성 음절 생성
             jung = newJung
             return ""
         } else if (jong == 0) {
-            // 초성+중성 상태에서 모음 입력 시 이중모음 결합 시도
             val combinedJung = combineJung(jung, newJung)
             if (combinedJung != -1) {
                 jung = combinedJung
@@ -102,7 +134,6 @@ class HangulAutomaton {
                 return committed
             }
         } else {
-            // 종성이 존재하는 상태에서 모음 입력 시 종성 분리
             val (prevJong, nextCho) = splitJong(jong)
             jong = prevJong
             val committed = getComposedChar()

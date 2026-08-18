@@ -30,6 +30,7 @@ class KeyboardService : InputMethodService() {
     }
     private val audioManager: AudioManager by lazy { getSystemService(AUDIO_SERVICE) as AudioManager }
     private var isShiftActive: Boolean = false
+    private var lastSpaceTime: Long = 0L
 
     override fun onCreate() {
         super.onCreate()
@@ -58,11 +59,15 @@ class KeyboardService : InputMethodService() {
     override fun onStartInputView(info: EditorInfo?, restarting: Boolean) {
         super.onStartInputView(info, restarting)
         automaton.reset()
+        automaton.doubleConsonantEnabled = prefs.doubleConsonantMode
         isShiftActive = false
+
         if (::keyboardView.isInitialized) {
             keyboardView.setShiftState(false)
             keyboardView.buildLayout()
         }
+
+        checkAutoCapitalize()
     }
 
     override fun onComputeInsets(outInsets: InputMethodService.Insets) {
@@ -118,7 +123,6 @@ class KeyboardService : InputMethodService() {
     }
 
     private fun handleHanjaConversion(connection: InputConnection) {
-        // Simple and useful common Hanja dictionary mapping
         val hanjaMap = mapOf(
             '한' to listOf("韓", "漢", "限", "恨"),
             '국' to listOf("國", "局", "菊"),
@@ -139,7 +143,6 @@ class KeyboardService : InputMethodService() {
             '만' to listOf("萬", "滿"),
             '년' to listOf("年"),
             '월' to listOf("月"),
-            '일' to listOf("日"),
             '시' to listOf("時", "市", "視", "詩"),
             '분' to listOf("分"),
             '초' to listOf("秒", "初", "草"),
@@ -175,7 +178,6 @@ class KeyboardService : InputMethodService() {
             }
         }
 
-        // Try extracting previous character from text
         val textBefore = connection.getTextBeforeCursor(1, 0)
         if (!textBefore.isNullOrEmpty()) {
             val char = textBefore[0]
@@ -205,15 +207,30 @@ class KeyboardService : InputMethodService() {
                 } else {
                     connection.deleteSurroundingText(1, 0)
                 }
+                checkAutoCapitalize()
             }
             "ENTER" -> {
                 commitComposingText(connection)
                 handleEnter(connection)
+                checkAutoCapitalize()
             }
             "SPACE" -> {
                 commitComposingText(connection)
+                val now = System.currentTimeMillis()
+                if (prefs.doubleSpacePeriod && (now - lastSpaceTime) < 450L) {
+                    val textBefore = connection.getTextBeforeCursor(1, 0)
+                    if (textBefore == " ") {
+                        connection.deleteSurroundingText(1, 0)
+                        connection.commitText(". ", 1)
+                        lastSpaceTime = 0L
+                        checkAutoCapitalize()
+                        return
+                    }
+                }
+                lastSpaceTime = now
                 connection.commitText(" ", 1)
                 if (isShiftActive) toggleShift()
+                checkAutoCapitalize()
             }
             "SHIFT" -> toggleShift()
             "EN/KO" -> {
@@ -240,6 +257,25 @@ class KeyboardService : InputMethodService() {
                 if (isShiftActive && key.length == 1) {
                     toggleShift()
                 }
+                checkAutoCapitalize()
+            }
+        }
+    }
+
+    private fun checkAutoCapitalize() {
+        if (!prefs.autoCapitalize) return
+        val connection = currentInputConnection ?: return
+        val textBefore = connection.getTextBeforeCursor(2, 0)
+        val shouldCapitalize = textBefore.isNullOrEmpty() ||
+                textBefore.endsWith(". ") ||
+                textBefore.endsWith("? ") ||
+                textBefore.endsWith("! ") ||
+                textBefore.endsWith("\n")
+
+        if (shouldCapitalize && !isShiftActive) {
+            isShiftActive = true
+            if (::keyboardView.isInitialized) {
+                keyboardView.setShiftState(true)
             }
         }
     }
@@ -289,7 +325,13 @@ class KeyboardService : InputMethodService() {
     private fun performSoundFeedback() {
         if (!prefs.soundEnabled) return
         try {
-            audioManager.playSoundEffect(AudioManager.FX_KEY_CLICK, 0.5f)
+            val fx = when (prefs.soundProfile) {
+                "soft_pop" -> AudioManager.FX_KEYPRESS_STANDARD
+                "classic_typewriter" -> AudioManager.FX_KEYPRESS_SPACEBAR
+                "terminal_beep" -> AudioManager.FX_KEYPRESS_RETURN
+                else -> AudioManager.FX_KEY_CLICK
+            }
+            audioManager.playSoundEffect(fx, 0.5f)
         } catch (_: Exception) { }
     }
 }
