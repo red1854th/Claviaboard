@@ -1,0 +1,6 @@
+{
+  "name": "Claviatura",
+  "description": "A Korean and English input method keyboard system app for Android.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

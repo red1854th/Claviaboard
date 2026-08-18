@@ -1,0 +1,551 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F8FAFC"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <!-- Top Title Bar -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:id="@+id/settingsTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="키보드 설정"
+                android:textSize="24sp"
+                android:textColor="#0F172A"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/closeSettingsButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="완료"
+                android:backgroundTint="#2563EB"
+                android:textColor="#FFFFFF" />
+        </LinearLayout>
+
+        <!-- Section 1: 크기 및 여백 (Size & Margins) -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="크기 및 여백"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="#2563EB"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#FFFFFF"
+            android:elevation="2dp"
+            android:padding="16dp"
+            android:layout_marginBottom="16dp">
+
+            <!-- Keyboard Height -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="키보드 높이"
+                    android:textSize="15sp"
+                    android:textColor="#1E293B" />
+
+                <TextView
+                    android:id="@+id/heightValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="240dp"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="#2563EB" />
+            </LinearLayout>
+
+            <SeekBar
+                android:id="@+id/heightSeekBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:max="180"
+                android:progress="60" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#F1F5F9"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="12dp" />
+
+            <!-- Horizontal Margin -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="좌우 여백"
+                    android:textSize="15sp"
+                    android:textColor="#1E293B" />
+
+                <TextView
+                    android:id="@+id/hMarginValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0dp"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="#2563EB" />
+            </LinearLayout>
+
+            <SeekBar
+                android:id="@+id/hMarginSeekBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:max="40"
+                android:progress="0" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#F1F5F9"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="12dp" />
+
+            <!-- Bottom Margin -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="하단 여백"
+                    android:textSize="15sp"
+                    android:textColor="#1E293B" />
+
+                <TextView
+                    android:id="@+id/bMarginValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0dp"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="#2563EB" />
+            </LinearLayout>
+
+            <SeekBar
+                android:id="@+id/bMarginSeekBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:max="40"
+                android:progress="0" />
+        </LinearLayout>
+
+        <!-- Section 2: 터치 및 입력 (Touch & Input) -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="터치 및 입력"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="#2563EB"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="8dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#FFFFFF"
+            android:elevation="2dp"
+            android:padding="16dp"
+            android:layout_marginBottom="16dp">
+
+            <!-- Key Preview Popup Switch -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="키 누름 미리보기 (팝업)"
+                        android:textSize="15sp"
+                        android:textColor="#1E293B" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="키를 누르고 있을 때 키 위에 글자 팝업 표시"
+                        android:textSize="12sp"
+                        android:textColor="#64748B" />
+                </LinearLayout>
+
+                <Switch
+                    android:id="@+id/showKeyPreviewSwitch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#F1F5F9"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="12dp" />
+
+            <!-- Long Press Timeout -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="길게 누르기(홀드) 인식 시간"
+                    android:textSize="15sp"
+                    android:textColor="#1E293B" />
+
+                <TextView
+                    android:id="@+id/longPressValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="350ms"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="#2563EB" />
+            </LinearLayout>
+
+            <SeekBar
+                android:id="@+id/longPressSeekBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:max="600"
+                android:progress="150" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#F1F5F9"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="12dp" />
+
+            <!-- Continuous Delete Delay -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="연속 삭제 지연 시간"
+                    android:textSize="15sp"
+                    android:textColor="#1E293B" />
+
+                <TextView
+                    android:id="@+id/deleteDelayValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="400ms"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="#2563EB" />
+            </LinearLayout>
+
+            <SeekBar
+                android:id="@+id/deleteDelaySeekBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:max="800"
+                android:progress="200" />
+        </LinearLayout>
+
+        <!-- Section 3: 피드백 (Feedback: Vibration & Sound) -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="피드백 (진동 및 소리)"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="#2563EB"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="8dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#FFFFFF"
+            android:elevation="2dp"
+            android:padding="16dp"
+            android:layout_marginBottom="16dp">
+
+            <!-- Vibration Switch -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="진동 피드백"
+                    android:textSize="15sp"
+                    android:textColor="#1E293B" />
+
+                <Switch
+                    android:id="@+id/vibrateSwitch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <!-- Vibration Strength Slider -->
+            <LinearLayout
+                android:id="@+id/vibrateStrengthContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="12dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="진동 세기"
+                        android:textSize="14sp"
+                        android:textColor="#64748B" />
+
+                    <TextView
+                        android:id="@+id/vibrateStrengthValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="30"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="#2563EB" />
+                </LinearLayout>
+
+                <SeekBar
+                    android:id="@+id/vibrateStrengthSeekBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:max="100"
+                    android:progress="30" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#F1F5F9"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="12dp" />
+
+            <!-- Sound Switch -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="키 소리"
+                    android:textSize="15sp"
+                    android:textColor="#1E293B" />
+
+                <Switch
+                    android:id="@+id/soundSwitch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Section 4: 레이아웃 옵션 (Layout Options) -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="레이아웃 옵션"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="#2563EB"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="8dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#FFFFFF"
+            android:elevation="2dp"
+            android:padding="16dp"
+            android:layout_marginBottom="24dp">
+
+            <!-- Number Row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="상단 숫자 행 표시"
+                    android:textSize="15sp"
+                    android:textColor="#1E293B" />
+
+                <Switch
+                    android:id="@+id/showNumberRowSwitch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#F1F5F9"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="12dp" />
+
+            <!-- Period Key -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="하단 마침표(.) 키 표시"
+                    android:textSize="15sp"
+                    android:textColor="#1E293B" />
+
+                <Switch
+                    android:id="@+id/showPeriodKeySwitch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Section 5: 키보드 테마 (Keyboard Themes) -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="키보드 테마"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="#2563EB"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="8dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#FFFFFF"
+            android:elevation="2dp"
+            android:padding="16dp"
+            android:layout_marginBottom="24dp">
+
+            <RadioGroup
+                android:id="@+id/themeRadioGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <RadioButton
+                    android:id="@+id/themeLightRadio"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="라이트 (기본)"
+                    android:textSize="15sp"
+                    android:textColor="#1E293B"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp" />
+
+                <RadioButton
+                    android:id="@+id/themeDarkRadio"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="다크 (Dark Mode)"
+                    android:textSize="15sp"
+                    android:textColor="#1E293B"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:layout_marginTop="8dp" />
+
+                <RadioButton
+                    android:id="@+id/themePastelBlueRadio"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="파스텔 블루 (Pastel Blue)"
+                    android:textSize="15sp"
+                    android:textColor="#1E293B"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:layout_marginTop="8dp" />
+            </RadioGroup>
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

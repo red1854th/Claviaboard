@@ -1,0 +1,14 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Solid Filled Shift Arrow (Horizontal wings span X=3 to X=21) -->
+    <path
+        android:fillColor="#FF374151"
+        android:pathData="M12,2L3,11h4.5v4.5h9V11h4.5L12,2z"/>
+    <!-- Bottom Underline Bar with exact same horizontal span (X=3 to X=21) -->
+    <path
+        android:fillColor="#FF374151"
+        android:pathData="M4.5,18h15c0.8,0 1.5,0.7 1.5,1.5s-0.7,1.5 -1.5,1.5h-15c-0.8,0 -1.5,-0.7 -1.5,-1.5s0.7,-1.5 1.5,-1.5z"/>
+</vector>
